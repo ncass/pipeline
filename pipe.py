@@ -1,6 +1,7 @@
 import luigi
 import pandas as pd
 
+#first task reads in csv file from kaggle and samples it
 class mft(luigi.Task):
 
     def output(self):
@@ -29,6 +30,7 @@ class mst(luigi.Task):
         with pd.ExcelWriter('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/lookupTable.xlsx') as writer:
             x[['anime_id', 'name']].to_excel(writer, sheet_name='id code', index='true')
 
+#third task refines our saved copy of the dataset and filters out any anime rated less than 110% of the average score
 class mtt(luigi.Task):
 
     def requires(self):
