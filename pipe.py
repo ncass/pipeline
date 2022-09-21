@@ -61,6 +61,7 @@ class clean(luigi.Task):
         df = pd.read_excel('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/refined_list.xlsx')
         pd.DataFrame(df[['name','rating']]).to_sql("anime_recs", con=engine)
 
+#pushes original unprocesed dataset to new db table
 class raw(luigi.Task):
 
     def requires(self):
