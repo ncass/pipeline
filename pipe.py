@@ -1,5 +1,9 @@
 import luigi
 import pandas as pd
+from sqlalchemy import create_engine
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 #first task reads in csv file from kaggle and samples it
 class mft(luigi.Task):
@@ -46,6 +50,18 @@ class mtt(luigi.Task):
         y.dropna(inplace=True)
         with pd.ExcelWriter('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/refined_list.xlsx') as writer:
             y.to_excel(writer, sheet_name='highly_rated', index='true')
+
+#pushes schema from file created in previous task to a docker container instance of mysql
+class clean(luigi.Task):
+
+    def requires(self):
+        return mtt()
+    def run(self):
+        engine = create_engine("mysql://root:nicky45@192.168.1.215:3306/anime")
+        df = pd.read_excel('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/refined_list.xlsx')
+        pd.DataFrame(df[['name','rating']]).to_sql("anime_recs", con=engine)
+
+    
 
 if __name__ == '__main__()':
     luigi.run()
