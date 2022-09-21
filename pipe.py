@@ -61,7 +61,14 @@ class clean(luigi.Task):
         df = pd.read_excel('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/refined_list.xlsx')
         pd.DataFrame(df[['name','rating']]).to_sql("anime_recs", con=engine)
 
-    
+class raw(luigi.Task):
+
+    def requires(self):
+        return mft()
+    def run(self):
+        engine = create_engine("mysql://root:nicky45@192.168.1.215:3306/anime")
+        df = pd.read_excel('/Users/nicholascassara/Documents/Github Projects/Portfolio/APIs/pipeline/dataset.xlsx')
+        pd.DataFrame(df).to_sql("raw_data", con=engine)   
 
 if __name__ == '__main__()':
     luigi.run()
